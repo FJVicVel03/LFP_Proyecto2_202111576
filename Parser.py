@@ -174,7 +174,7 @@ class Parser:
                     statements.append(("FIND_ONE", collection_name))
 
                 else:
-                    raise SyntaxError(f"Error inesperado: {self.tokens[self.pos][0]} en la línea {self.tokens[self.pos][2]}")
+                    raise SyntaxError(f"Error ins: {self.tokens[self.pos][0]} en la línea {self.tokens[self.pos][2]}")
 
         except SyntaxError as e:
             print(e)
