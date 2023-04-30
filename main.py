@@ -173,7 +173,7 @@ class MainWindow(QMainWindow):
         self.errors_table.setItem(0, 3, QTableWidgetItem("-"))
         self.errors_table.setItem(0, 4, QTableWidgetItem(error_msg))
 
-    def show_tokens(self):
+    def show_tokens(self, _checked=False):
         scanner = Scanner(self.code_editor.toPlainText())
         tokens = scanner.tokenize()
         print("Tokens:", tokens)  # Imprime la variable tokens aquí para ver su valor
