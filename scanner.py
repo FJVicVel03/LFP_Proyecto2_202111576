@@ -10,6 +10,7 @@ def is_delimiter(c):
 def is_quote(c):
     return c in "\"'"
 
+
 TRANSITION_TABLE = {
     'S0': {
         'is_alpha': 'S1',
@@ -18,13 +19,21 @@ TRANSITION_TABLE = {
     },
     'S1': {
         'is_alnum_or_underscore': 'S1',
+        'not_is_alnum_or_underscore': 'S0'
     },
-    'S2': {},
+    'S2': {
+        'not_is_delimiter': 'S0'
+    },
     'S3': {
         'is_quote': 'S3_end',
     },
-    'S3_end': {},
+    'S3_end': {
+        'not_is_quote': 'S0'
+    },
 }
+
+def is_comment_start(input_str, i):
+    return input_str[i:i+3] == '---'
 
 class Scanner:
     def __init__(self, input_str):
@@ -58,10 +67,9 @@ class Scanner:
             '$': 'DOLLAR',
             '“': 'OPEN_QUOTE',
             '”': 'CLOSE_QUOTE',
-            ' ': 'SPACE',
+            '-': 'SPACE',
             '*': 'ASTERISK',
-            '/': 'BAR',
-            '-': 'SEPARATE'
+            '/': 'BAR'
         }
 
     def is_identifier(self, s):
@@ -79,6 +87,11 @@ class Scanner:
 
         while i < n:
             c = self.input_str[i]
+
+            if is_comment_start(self.input_str, i):
+                while i < n and self.input_str[i] != '\n':
+                    i += 1
+                continue
 
             if state == 'S0':
                 if is_alpha(c):
@@ -106,6 +119,14 @@ class Scanner:
                     token = self.input_str[start:i]
                     if token in self.keywords:
                         self.tokens.append((self.keywords[token], token, line_num, start, i))
+                        if token == "nueva":
+                            while self.input_str[i].isspace():
+                                i += 1
+                            if self.input_str[i:i+1] == "=":
+                                i += 1
+                                self.tokens.append(('EQUALS', '=', line_num, i-1, i))
+                            else:
+                                i -= 1  # Revert the index back to handle the next token properly
                     elif self.is_identifier(token):
                         self.tokens.append(('ID', token, line_num, start, i))
                     else:

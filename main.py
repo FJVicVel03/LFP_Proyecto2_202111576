@@ -1,5 +1,5 @@
 import sys
-import os
+import scanner
 from scanner import Scanner
 from Parser import Parser
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QDockWidget, QMenu, QMenuBar, QAction, QFileDialog, QVBoxLayout, QWidget, QPlainTextEdit, QLabel, QTableWidget, QTableWidgetItem
@@ -46,12 +46,12 @@ class MainWindow(QMainWindow):
         self.errors_dock.setWidget(self.errors_table)
         self.addDockWidget(2, self.errors_dock)
 
-        # Menú Archivo
+        # Menu Archivo
         self.menu_archivo = QMenu("Archivo", self)
         self.menu_analisis = QMenu("Análisis", self)
         self.menu_ver = QMenu("Ver", self)
 
-        # Menú Archivo acciones
+        # Menu Archivo acciones
         self.action_nuevo = QAction("Nuevo", self)
         self.action_abrir = QAction("Abrir", self)
         self.action_guardar = QAction("Guardar", self)
@@ -69,11 +69,11 @@ class MainWindow(QMainWindow):
         self.action_analizar = QAction("Generar sentencias MongoDB", self)
         self.menu_analisis.addAction(self.action_analizar)
 
-        # Menú Ver acciones
+        # Menu Ver acciones
         self.action_ver_tokens = QAction("Tokens", self)
         self.menu_ver.addAction(self.action_ver_tokens)
 
-        # Añadir menús a la barra de menú
+        # Aniadir menus a la barra de menú
         self.menu_bar = QMenuBar(self)
         self.menu_bar.addMenu(self.menu_archivo)
         self.menu_bar.addMenu(self.menu_analisis)
@@ -124,46 +124,45 @@ class MainWindow(QMainWindow):
 
     def analyze_code(self):
         input_str = self.code_editor.toPlainText()
-        scanner = Scanner(input_str)  # Crear una instancia de Scanner
-        tokens = scanner.tokenize()  # Obtener los tokens
+        scanner_instance = scanner.Scanner(input_str)
+        tokens = scanner_instance.tokenize()  # Obtener los tokens
         parser = Parser(tokens)  # Crear una instancia del analizador con los tokens
 
         try:
             result = parser.parse()
-            # Verificar la estructura del objeto 'result'
             print(result)
 
-            if 'statements' in result:
-                mongodb_statements = []
-                for stmt in result['statements']:
-                    if stmt[0] == "CREATE_DB":
-                        mongodb_statements.append("use myDatabase")
-                    elif stmt[0] == "DROP_DB":
-                        mongodb_statements.append("db.dropDatabase()")
-                    elif stmt[0] == "CREATE_COLLECTION":
-                        mongodb_statements.append(f"db.createCollection('{stmt[1]}')")
-                    elif stmt[0] == "DROP_COLLECTION":
-                        mongodb_statements.append(f"db.{stmt[1]}.drop()")
-                    elif stmt[0] == "INSERT_ONE":
-                        mongodb_statements.append(f"db.{stmt[1]}.insertOne({stmt[2]})")
-                    elif stmt[0] == "UPDATE_ONE":
-                        mongodb_statements.append(f"db.{stmt[1]}.updateOne({stmt[2]})")
-                    elif stmt[0] == "DELETE_ONE":
-                        mongodb_statements.append(f"db.{stmt[1]}.deleteOne({stmt[2]})")
-                    elif stmt[0] == "FIND_ALL":
-                        mongodb_statements.append(f"db.{stmt[1]}.find()")
-                    elif stmt[0] == "FIND_ONE":
-                        mongodb_statements.append(f"db.{stmt[1]}.findOne()")
+            mongodb_statements = []
+            for stmt in result:
+                if stmt[0] == "CREATE_DB":
+                    mongodb_statements.append("use " + stmt[1])
+                    print("CREATE_DB:", stmt[1])
+                elif stmt[0] == "DROP_DB":
+                    mongodb_statements.append("db.dropDatabase()")
+                    print("DROP_DB")
+                elif stmt[0] == "CREATE_COLLECTION":
+                    mongodb_statements.append(f"db.createCollection('{stmt[1]}')")
+                    print("CREATE_COLLECTION:", stmt[1])
+                elif stmt[0] == "DROP_COLLECTION":
+                    mongodb_statements.append(f"db.{stmt[1]}.drop()")
+                elif stmt[0] == "INSERT_ONE":
+                    mongodb_statements.append(f"db.{stmt[1]}.insertOne({stmt[2]})")
+                elif stmt[0] == "UPDATE_ONE":
+                    mongodb_statements.append(f"db.{stmt[1]}.updateOne({stmt[2]}, {stmt[3]})")
+                elif stmt[0] == "DELETE_ONE":
+                    mongodb_statements.append(f"db.{stmt[1]}.deleteOne({stmt[2]})")
+                elif stmt[0] == "FIND_ALL":
+                    mongodb_statements.append(f"db.{stmt[1]}.find()")
+                elif stmt[0] == "FIND_ONE":
+                    mongodb_statements.append(f"db.{stmt[1]}.findOne({stmt[2]})")
 
-                self.sentences_viewer.setPlainText("\n".join(mongodb_statements))
-            else:
-                self.sentences_viewer.setPlainText('')
-
-            # Llamar a show_tokens para actualizar la tabla de tokens
+            self.sentences_viewer.setPlainText("\n".join(mongodb_statements))
             self.show_tokens(parser.tokens)
+            self.tokens_table.update()
         except Exception as e:
-            # Manejar errores en el análisis y mostrarlos en la tabla de errores
             self.update_error_table(f"Error inesperado: {str(e)}")
+            self.errors_table.update()
+        print("Result:", result)
 
     def update_error_table(self, error_msg):
         self.errors_table.setRowCount(1)
@@ -173,7 +172,7 @@ class MainWindow(QMainWindow):
         self.errors_table.setItem(0, 3, QTableWidgetItem("-"))
         self.errors_table.setItem(0, 4, QTableWidgetItem(error_msg))
 
-    def show_tokens(self, _checked=False):
+    def show_tokens(self, tokens):
         scanner = Scanner(self.code_editor.toPlainText())
         tokens = scanner.tokenize()
         print("Tokens:", tokens)  # Imprime la variable tokens aquí para ver su valor
