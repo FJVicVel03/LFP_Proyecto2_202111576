@@ -83,10 +83,10 @@ class Parser:
                     self.expect("LPAREN")                    
                     self.expect("DQUOTE")
                     self.expect("ID")
-                    collection_name = self.tokens[self.pos][1]
                     self.expect("DQUOTE")
                     self.expect("RPAREN")
                     self.expect("SEMICOLON")
+                    collection_name = self.tokens[self.pos][1]
                     statements.append(("CREATE_COLLECTION", collection_name))
 
                 elif self.accept("DROP_COLLECTION"):
@@ -98,10 +98,10 @@ class Parser:
                     self.expect("LPAREN")
                     self.expect("DQUOTE")
                     self.expect("ID")
-                    collection_name = self.tokens[self.pos][1]
                     self.expect("DQUOTE")
                     self.expect("RPAREN")
                     self.expect("SEMICOLON")
+                    collection_name = self.tokens[self.pos][1]
                     statements.append(("DROP_COLLECTION", collection_name))
 
                 elif self.accept("INSERT_ONE"):
@@ -144,8 +144,8 @@ class Parser:
                     self.expect("ID")
                     self.skip_whitespace()
                     self.expect("EQUALS")
-                    self.expect("NEW")
                     json_query = self.accept_json_content()
+                    self.expect("NEW")
                     self.expect("UPDATE_ONE")
                     self.expect("LPAREN") 
                     self.expect("DQUOTE")
@@ -208,9 +208,9 @@ class Parser:
                     self.expect("DQUOTE")
                     self.expect("RBRACE")
                     self.expect("SQUOTE")
-                    json_query = self.accept_json_content()
                     self.expect("RPAREN")
                     self.expect("SEMICOLON")
+                    json_query = self.accept_json_content()
                     statements.append(("DELETE_ONE", json_query))
 
                 elif self.accept("FIND_ALL"):
@@ -229,9 +229,9 @@ class Parser:
                     self.expect("NEW")
                     self.expect("FIND_ONE")
                     self.expect("LPAREN")
-                    json_query = self.accept_json_content()
                     self.expect("RPAREN")
                     self.expect("SEMICOLON")
+                    json_query = self.accept_json_content()
                     statements.append(("FIND_ONE", json_query))
 
                 elif self.accept("ID"):

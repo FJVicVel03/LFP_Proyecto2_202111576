@@ -60,7 +60,8 @@ class Scanner:
             '”': 'CLOSE_QUOTE',
             ' ': 'SPACE',
             '*': 'ASTERISK',
-            '/': 'BAR'
+            '/': 'BAR',
+            '-': 'SEPARATE'
         }
 
     def is_identifier(self, s):
