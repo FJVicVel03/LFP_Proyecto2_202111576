@@ -2,92 +2,148 @@ import sys
 import scanner
 from scanner import Scanner
 from Parser import Parser
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QDockWidget, QMenu, QMenuBar, QAction, QFileDialog, QVBoxLayout, QWidget, QPlainTextEdit, QLabel, QTableWidget, QTableWidgetItem
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QTextEdit, QDockWidget, QMenu, QMenuBar, QAction,
+                             QFileDialog, QVBoxLayout, QWidget, QPlainTextEdit, QLabel, QTableWidget, QTableWidgetItem,
+                             QTabWidget)
 from PyQt5.QtGui import QFont
-
+# from PyQt5.QtCore import Qt
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # Ventana principal
-        self.setWindowTitle('Compilador NoSQL')
+        # Main window
+        self.setWindowTitle('Analizador - 202111576')
         self.setGeometry(100, 100, 1200, 800)
 
-        # Agregar widgets y configuraciones adicionales para la interfaz de usuario
+        # Apply the custom style sheet
+        self.init_style_sheet()
+
+        # Add widgets and additional UI settings
         self.init_ui()
 
+    def init_style_sheet(self):
+        style_sheet = """
+        QMainWindow {
+            background-color: #3a3a3a;
+        }
+        QPlainTextEdit, QTextEdit {
+            background-color: #232629;
+            color: #e6e6e6;
+            border: 1px solid #76797c;
+            border-radius: 2px;
+        }
+        QTableWidget {
+            background-color: #232629;
+            color: #e6e6e6;
+            border: 1px solid #76797c;
+            border-radius: 2px;
+            gridline-color: #5b5e6d;
+            alternate-background-color: #31363b;
+        }
+        QHeaderView::section {
+            background-color: #31363b;
+            color: #e6e6e6;
+            padding: 5px;
+            border: 1px solid #76797c;
+        }
+        QMenuBar {
+            background-color: #31363b;
+            color: #e6e6e6;
+        }
+        QMenuBar::item:selected {
+            background-color: #3daee9;
+            color: #e6e6e6;
+        }
+        QMenu {
+            background-color: #31363b;
+            color: #e6e6e6;
+            border: 1px solid #76797c;
+        }
+        QMenu::item:selected {
+            background-color: #3daee9;
+            color: #e6e6e6;
+        }
+        QTabWidget::pane {
+            border: 1px solid #76797c;
+            border-radius: 2px;
+        }
+        QTabBar::tab {
+            background-color: #31363b;
+            color: #e6e6e6;
+            padding: 5px;
+            border: 1px solid #76797c;
+            border-bottom-color: #31363b;
+            border-top-left-radius: 2px;
+            border-top-right-radius: 2px;
+        }
+        QTabBar::tab:selected, QTabBar::tab:hover {
+            background-color: #3daee9;
+            color: #e6e6e6;
+        }
+        """
+        self.setStyleSheet(style_sheet)
+
     def init_ui(self):
-        # Editor de código
+        self.tabs = QTabWidget()
+
+        # Code editor
         self.code_editor = QPlainTextEdit(self)
         self.code_editor.setFont(QFont("Courier", 12))
-        self.setCentralWidget(self.code_editor)
 
-        # Area de visualización de sentencias
+        # Sentences viewer
         self.sentences_viewer = QTextEdit(self)
         self.sentences_viewer.setReadOnly(True)
-        self.sentences_dock = QDockWidget("Sentencias Generadas", self)
-        self.sentences_dock.setWidget(self.sentences_viewer)
-        self.addDockWidget(2, self.sentences_dock)
 
-        # Agregar tabla de tokens
+        # Tokens table
         self.tokens_table = QTableWidget(self)
         self.tokens_table.setColumnCount(4)
         self.tokens_table.setHorizontalHeaderLabels(['No.', 'Tipo', 'Linea', 'Lexema'])
-        self.tokens_dock = QDockWidget("Tokens", self)
-        self.tokens_dock.setWidget(self.tokens_table)
-        self.addDockWidget(2, self.tokens_dock)
 
-        # Area de errores
+        # Errors table
         self.errors_table = QTableWidget(self)
         self.errors_table.setColumnCount(5)
-        self.errors_table.setHorizontalHeaderLabels(['Tipo', 'Linea', 'Columna', 'Token', 'Descripcion'])
-        self.errors_dock = QDockWidget("Errores", self)
-        self.errors_dock.setWidget(self.errors_table)
-        self.addDockWidget(2, self.errors_dock)
+        self.errors_table.setHorizontalHeaderLabels(['Tipe', 'Linea', 'Columna', 'Token', 'Descripcion'])
 
-        # Menu Archivo
-        self.menu_archivo = QMenu("Archivo", self)
-        self.menu_analisis = QMenu("Análisis", self)
-        self.menu_ver = QMenu("Ver", self)
+        # Add tabs
+        self.tabs.addTab(self.code_editor, "Codigo")
+        self.tabs.addTab(self.tokens_table, "Tokens")
+        self.tabs.addTab(self.errors_table, "Errores")
+        self.tabs.addTab(self.sentences_viewer, "Senencias Generadas BD")
 
-        # Menu Archivo acciones
-        self.action_nuevo = QAction("Nuevo", self)
-        self.action_abrir = QAction("Abrir", self)
-        self.action_guardar = QAction("Guardar", self)
-        self.action_guardar_como = QAction("Guardar como", self)
-        self.action_salir = QAction("Salir", self)
+        self.setCentralWidget(self.tabs)
 
-        self.menu_archivo.addAction(self.action_nuevo)
-        self.menu_archivo.addAction(self.action_abrir)
-        self.menu_archivo.addAction(self.action_guardar)
-        self.menu_archivo.addAction(self.action_guardar_como)
-        self.menu_archivo.addSeparator()
-        self.menu_archivo.addAction(self.action_salir)
+        # Menu
+        self.menu_bar = self.menuBar()
+        self.file_menu = self.menu_bar.addMenu("Archivo")
+        self.analysis_menu = self.menu_bar.addMenu("Analizar")
+        self.view_menu = self.menu_bar.addMenu("Ver")
 
-        # Menú Análisis acciones
-        self.action_analizar = QAction("Generar sentencias MongoDB", self)
-        self.menu_analisis.addAction(self.action_analizar)
+        # File menu actions
+        self.new_action = QAction("Nuevo", self)
+        self.open_action = QAction("Abrir", self)
+        self.save_action = QAction("Guardar", self)
+        self.save_as_action = QAction("Guardar Como", self)
+        self.exit_action = QAction("Salir", self)
 
-        # Menu Ver acciones
-        self.action_ver_tokens = QAction("Tokens", self)
-        self.menu_ver.addAction(self.action_ver_tokens)
+        self.file_menu.addAction(self.new_action)
+        self.file_menu.addAction(self.open_action)
+        self.file_menu.addAction(self.save_action)
+        self.file_menu.addAction(self.save_as_action)
+        self.file_menu.addSeparator()
+        self.file_menu.addAction(self.exit_action)
 
-        # Aniadir menus a la barra de menú
-        self.menu_bar = QMenuBar(self)
-        self.menu_bar.addMenu(self.menu_archivo)
-        self.menu_bar.addMenu(self.menu_analisis)
-        self.menu_bar.addMenu(self.menu_ver)
-        self.setMenuBar(self.menu_bar)
+        # Analysis menu actions
+        self.analyze_action = QAction("Generar Sentencias MongoDb", self)
+        self.analysis_menu.addAction(self.analyze_action)
 
-        # Conectar acciones a funciones
-        self.action_abrir.triggered.connect(self.open_file)
-        self.action_guardar.triggered.connect(self.save_file)
-        self.action_guardar_como.triggered.connect(self.save_file_as)
-        self.action_nuevo.triggered.connect(self.new_file)
-        self.action_salir.triggered.connect(self.close)
-        self.action_analizar.triggered.connect(self.analyze_code)
-        self.action_ver_tokens.triggered.connect(self.show_tokens)
+        # Connect actions to functions
+        self.open_action.triggered.connect(self.open_file)
+        self.save_action.triggered.connect(self.save_file)
+        self.save_as_action.triggered.connect(self.save_file_as)
+        self.new_action.triggered.connect(self.new_file)
+        self.exit_action.triggered.connect(self.close)
+        self.analyze_action.triggered.connect(self.analyze_code)
 
     def new_file(self):
         if self.code_editor.document().isModified():
@@ -154,7 +210,7 @@ class MainWindow(QMainWindow):
                 elif stmt[0] == "FIND_ALL":
                     mongodb_statements.append(f"db.{stmt[1]}.find()")
                 elif stmt[0] == "FIND_ONE":
-                    mongodb_statements.append(f"db.{stmt[1]}.findOne({stmt[2]})")
+                    mongodb_statements.append(f"db.{stmt[1]}.findOne()")
 
             self.sentences_viewer.setPlainText("\n".join(mongodb_statements))
             self.show_tokens(parser.tokens)

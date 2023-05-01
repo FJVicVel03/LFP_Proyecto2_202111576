@@ -255,24 +255,33 @@ class Parser:
 
                 elif self.accept("FIND_ALL"):
                     self.skip_whitespace()
+                    self.expect("ID")
                     self.expect("EQUALS")
                     self.expect("NEW")
                     self.expect("FIND_ALL")
                     self.expect("LPAREN")
+                    self.expect("DQUOTE")
+                    self.expect("ID")
+                    collection_name = self.tokens[self.pos - 1][1]
+                    self.expect("DQUOTE")
                     self.expect("RPAREN")
                     self.expect("SEMICOLON")
-                    statements.append(("FIND_ALL",))
+                    statements.append(("FIND_ALL",collection_name))
 
                 elif self.accept("FIND_ONE"):
+                    self.expect("ID")
                     self.skip_whitespace()
                     self.expect("EQUALS")
                     self.expect("NEW")
                     self.expect("FIND_ONE")
                     self.expect("LPAREN")
-                    json_query = self.accept_json_content()
+                    self.expect("DQUOTE")
+                    self.expect("ID")
+                    collection_name = self.tokens[self.pos - 1][1]
+                    self.expect("DQUOTE")
                     self.expect("RPAREN")
                     self.expect("SEMICOLON")
-                    statements.append(("FIND_ONE", json_query))
+                    statements.append(("FIND_ONE", collection_name))
 
                 elif self.accept("ID"):
                     self.skip_whitespace()
