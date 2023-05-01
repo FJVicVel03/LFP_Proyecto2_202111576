@@ -136,6 +136,15 @@ class Parser:
             self.pos += 1
 
     def parse(self):
+        """
+        Esta función analiza una cadena de entrada dada y devuelve una lista de 
+        basadas en las reglas gramaticales definidas en la función.
+        :return: una lista de tuplas, donde cada tupla representa una sentencia analizada 
+        del código de entrada. El primer elemento de la tupla es una cadena que indica 
+        el tipo de sentencia (por ejemplo, "CREATE_DB", "DROP_COLLECTION", etc.), 
+        y los demás elementos de la tupla dependen del tipo de sentencia. 
+        Por ejemplo, para una sentencia "CREATE_COLLECTION", el segundo elemento de la tupla
+        """
         statements = []
         try:
             while self.pos < len(self.tokens):

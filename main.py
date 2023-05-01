@@ -179,6 +179,10 @@ class MainWindow(QMainWindow):
                 file.write(self.code_editor.toPlainText())
 
     def analyze_code(self):
+        """
+        La función toma código de entrada, lo tokeniza, lo analiza y genera sentencias 
+        MongoDB basadas en el código analizado.
+        """
         input_str = self.code_editor.toPlainText()
         scanner_instance = scanner.Scanner(input_str)
         tokens = scanner_instance.tokenize()  # Obtener los tokens
@@ -221,6 +225,11 @@ class MainWindow(QMainWindow):
         print("Result:", result)
 
     def update_error_table(self, error_msg):
+        """
+        Esta función actualiza una tabla con un mensaje de error.
+        
+        :param error_msg: El mensaje de error que debe añadirse a la tabla de errores.
+        """
         self.errors_table.setRowCount(1)
         self.errors_table.setItem(0, 0, QTableWidgetItem("Error"))
         self.errors_table.setItem(0, 1, QTableWidgetItem("-"))
@@ -229,6 +238,14 @@ class MainWindow(QMainWindow):
         self.errors_table.setItem(0, 4, QTableWidgetItem(error_msg))
 
     def show_tokens(self, tokens):
+        """
+        Esta función toma una lista de tokens, los muestra en una tabla, y 
+        imprime un mensaje de error si la entrada no es una lista.
+        
+        param tokens: El parámetro tokens es una lista de tuplas que representan 
+        los tokens generados por el escáner. Cada tupla contiene el tipo de token, el valor 
+        del token y el número de línea en la que se encontró el token.
+        """
         scanner = Scanner(self.code_editor.toPlainText())
         tokens = scanner.tokenize()
         print("Tokens:", tokens)  # Imprime la variable tokens aquí para ver su valor

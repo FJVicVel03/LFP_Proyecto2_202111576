@@ -37,6 +37,12 @@ def is_comment_start(input_str, i):
 
 class Scanner:
     def __init__(self, input_str):
+        """
+        Esta es una función de Python que inicializa una clase con una cadena de entrada, tokens 
+        palabras clave y delimitadores.
+        
+        param string_str: Una cadena que contiene el código de entrada para ser 'tokenizado'
+        """
         self.input_str = input_str
         self.tokens = []
         self.keywords = {
@@ -78,6 +84,13 @@ class Scanner:
         return False
 
     def tokenize(self):
+        """
+        Esta función tokeniza una cadena de entrada identificando palabras clave, 
+        identificadores, delimitadores y cadenas.
+        :return: El método `tokenize` devuelve una lista de tokens, 
+        donde cada token es una tupla que contiene información sobre el 
+        como su tipo, valor, número de línea e índices de inicio y fin en la cadena de entrada.
+        """
         self.tokens = []
         state = 'S0'
         line_num = 1
