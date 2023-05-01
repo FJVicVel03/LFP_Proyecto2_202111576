@@ -12,13 +12,14 @@
 #### Como se mencionó previamente, se realizó en 3 módulos el proyecto, siendo esta la explicación para cada uno:
 - main.py: la funcionalidad se centra en este módulo, pues es recibe las sentencias para mongoDB. La función es esta:
 ![Analyze_Code](/images/Analyze_Code.jpg)
-además se pueden agregar las funciones 'update_error_table' y 'show_tokens'. La primera función analiza si existe algún error dentro de la entrada del archivo, y en dado caso exista, lo alamacenará en una tabla.
+- además se pueden agregar las funciones 'update_error_table' y 'show_tokens'. La primera función analiza si existe algún error dentro de la entrada del archivo, y en dado caso exista, lo alamacenará en una tabla.
 La siguiente función agrega los tokens obtenidos desde el analizados léxico, es decir, scanner.py.
 Las funciones son las siguientes:
 ![update_tokens](/images/update_tokens.jpg) 
 - scanner.py: Ahora se centrará en el analizador léxico, pues es donde todo inicia. En este módulo se trabajo con los pasos que se realizó el AFD, en una tabla de estados. Esta tabla de estados se siguió para poder separar en tokens los diferentes identificadores del archivo de entrada. Claro, estos archivos de entrada necesitaban de palabras claves y delimitadores, siendo estos los utilizados:
 ![Claves_Delimitadores](/images/Claves_Delimitadores.jpg)
 - La tabla de transiciones es la siguiente:
+
 ![TT](/images/TT.jpg)
 
 - scanner.py: en este módulo se lleva a cabo el análisis sintáctico del los tokens obtenidos, en este módulo es donde se forman las sentencias para MongoDB. Esta es pasada por un parser, el cual identificará las palabras claves y delimitadores para crear correctamente la sentencia. Pues lo que recibe es la entrada de tokens ya analizados por el scanner, entonces acá se desglozan y se vuelven sentencias, por ejemplo, esta es el código para generar la sentencia parar crear una base de datos en MongoDB:
