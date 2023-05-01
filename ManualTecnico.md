@@ -22,7 +22,7 @@ Las funciones son las siguientes:
 
 ![TT](/images/TT.jpg)
 
-- scanner.py: en este módulo se lleva a cabo el análisis sintáctico del los tokens obtenidos, en este módulo es donde se forman las sentencias para MongoDB. Esta es pasada por un parser, el cual identificará las palabras claves y delimitadores para crear correctamente la sentencia. Pues lo que recibe es la entrada de tokens ya analizados por el scanner, entonces acá se desglozan y se vuelven sentencias, por ejemplo, esta es el código para generar la sentencia parar crear una base de datos en MongoDB:
+- Parse.py: en este módulo se lleva a cabo el análisis sintáctico del los tokens obtenidos, en este módulo es donde se forman las sentencias para MongoDB. Esta es pasada por un parser, el cual identificará las palabras claves y delimitadores para crear correctamente la sentencia. Pues lo que recibe es la entrada de tokens ya analizados por el scanner, entonces acá se desglozan y se vuelven sentencias, por ejemplo, esta es el código para generar la sentencia parar crear una base de datos en MongoDB:
 ![CREATE_DB](/images/CREATE_DB.jpg)
 - Pues este código devolverá el nombre que se le adjuntó en el archivo de entrada de formato JSON, dando como resultado ' use('ID'); (que ID es el nombre que se le adjudica)
 
