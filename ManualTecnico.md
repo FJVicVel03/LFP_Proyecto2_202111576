@@ -91,7 +91,7 @@ Las funciones son las siguientes:
 ### Método del árbol derivado de la expresión regular:
 ![MA](/images/MA.png)
 
--En este árbol, la raíz es el nodo Sentencia, que representa la operación que se va a realizar en la base de datos. El nodo Verbo representa el verbo de la operación (o sea, una keyword), mientras que el nodo Nombre representa el nombre de la base de datos o colección en la que se realizará la operación. Si la operación incluye argumentos, se creará un nodo Args que tendrá nodos hijos Arg1, Arg2, etc. para cada uno de los argumentos.
+- En este árbol, la raíz es el nodo Sentencia, que representa la operación que se va a realizar en la base de datos. El nodo Verbo representa el verbo de la operación (o sea, una keyword), mientras que el nodo Nombre representa el nombre de la base de datos o colección en la que se realizará la operación. Si la operación incluye argumentos, se creará un nodo Args que tendrá nodos hijos Arg1, Arg2, etc. para cada uno de los argumentos.
 
 ### El gráfico del AFD utilizado en el analizador léxico es el siguiente:
 ![AFD](/images/AFD.png)
