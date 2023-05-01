@@ -1,9 +1,9 @@
-#Manual de Usuario
+# Manual de Usuario
 
-###Fernando José Vicente Velásquez, 202111576
-###Lenguajes Formales y de Programación
+### Fernando José Vicente Velásquez, 202111576
+### Lenguajes Formales y de Programación
 
-#####Para un correcto manejo del programa realizado como producto del proyecto número 2, deben seguirse una serie de pasos para su correcto funcionamiento, siento estos:
+##### Para un correcto manejo del programa realizado como producto del proyecto número 2, deben seguirse una serie de pasos para su correcto funcionamiento, siento estos:
 
 - Al ejecutar el código, se verá de esta manera:
 ![Pantalla](/images/Pantalla1.jpg)
